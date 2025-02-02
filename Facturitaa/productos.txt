@@ -1,0 +1,3 @@
+codigo1|Nombre Producto 1|10.99|100
+codigo2|Nombre Producto 2|15.50|50
+codigo3|Nombre Producto 3|7.99|200
