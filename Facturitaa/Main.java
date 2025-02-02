@@ -202,21 +202,48 @@ public class Main {
             return null;
         }
 
-        // Mostrar la factura con IVA
+        // Mostrar Factura
         private void mostrarFactura(String detallesCompra, float subtotal) {
             DecimalFormat df = new DecimalFormat();
             float valorIva = subtotal * IVA;
             float totalConIVA = subtotal + valorIva;
 
-            // Detalles de la factura
-            String factura = "\n\t| --- FACTURA --- |\n";
-            factura += detallesCompra + "\n";
-            factura += "\n\t| --- Totales --- |\n";
-            factura += "| ~ Subtotal: $" + df.format(subtotal) + "\n";
-            factura += "| ~ IVA (16%): $" + df.format(valorIva) + "\n";
-            factura += "| ~ Total a pagar: $" + df.format(totalConIVA);
+            // Fecha de emisión
+            String fecha = LocalDate.now().toString();
 
-            JOptionPane.showMessageDialog(this, factura, "Factura", JOptionPane.INFORMATION_MESSAGE);
+            // Detalles de la factura
+            StringBuilder factura = new StringBuilder();
+            factura.append("==========================================================\n");
+            factura.append("                             FACTURA                      \n");
+            factura.append("                          --- Tienda ---          \n");
+            factura.append("==========================================================\n");
+            factura.append(String.format("R.U.C.: %-35s\n", "1790112233001"));
+            factura.append(String.format("FACTURA NO.: %-30s\n", "002-001-123456789"));
+            factura.append(String.format("AUT. SRI: %-31s\n", "1234567890"));
+            factura.append("----------------------------------------------------------\n");
+            factura.append(String.format("Sr(es): %-30s\n", textoNombre.getText() + " " + textoApellido.getText()));
+            factura.append(String.format("R.U.C./C.I.: %-30s\n", textoCedula.getText()));
+            factura.append(String.format("Fecha Emisión: %-25s\n", fecha));
+            factura.append("----------------------------------------------------------\n");
+            factura.append(String.format("%-5s %-20s %-12s %-12s\n", "Cant", "Producto", "P. Unitario", "V. Total"));
+            factura.append("----------------------------------------------------------\n");
+
+            // Detallar los productos
+            for (Producto producto : productosSeleccionados) {
+                factura.append(String.format("%-8d %-21s %-18s %-14s\n",
+                        producto.getCantidad(),
+                        producto.getNombre(),
+                        df.format(producto.getPrecio()),
+                        df.format(producto.total(producto.getCantidad()))));
+            }
+
+            factura.append("----------------------------------------------------------\n");
+            factura.append(String.format("%-55s %-12s\n", "Subtotal: ", df.format(subtotal)));
+            factura.append(String.format("%-54s %-12s\n", "IVA (16%): ", df.format(valorIva)));
+            factura.append(String.format("%-51s %-12s\n", "Total a pagar: ", df.format(totalConIVA)));
+            factura.append("==========================================================\n");
+
+            JOptionPane.showMessageDialog(this, factura.toString(), "Factura", JOptionPane.INFORMATION_MESSAGE);
         }
 
         // Ingresar datos del receptor
@@ -226,11 +253,6 @@ public class Main {
             String cedula = textoCedula.getText();
             String celular = textoCelular.getText();
             LocalDate diaCompra = LocalDate.now();
-
-            textoNombre.setText("");
-            textoApellido.setText("");
-            textoCedula.setText("");
-            textoCelular.setText("");
         }
     }
 }
